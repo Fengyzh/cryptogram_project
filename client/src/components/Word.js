@@ -3,7 +3,7 @@ import Letter from './Letter'
 import './Word.css'
 
 
-export default function word({word, wordIndex}) {
+export default function word({word, wordIndex, wIndex}) {
 
 
 
@@ -11,7 +11,8 @@ export default function word({word, wordIndex}) {
     <div className='word'>
      {word.split("").map((letter, index)=>{
             //console.log(letter)
-            return <Letter fieldValue={wordIndex[index]} keyLetter={letter}/>
+            
+            return <Letter lIndex={(wIndex)+(index+1)} fieldValue={" "} keyLetter={letter}/>
 
         })
 

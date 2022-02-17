@@ -1,4 +1,20 @@
 .board{
     display: flex;
     padding: 2% 5%;
+    width: 100vw;
+    flex-wrap: wrap;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.inputs {
+    width: 80px;
+    text-align: center;
+    outline: none;
+    border: none;
+    border-bottom: 3px solid black;
+    margin: 0 5px;
+    font-size: large;
 }

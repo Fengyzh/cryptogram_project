@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Word from './Word';
 import './GameBoard.css';
-import words from '../data.json'
+import wwords from '../data.json'
 
 
 
@@ -9,15 +9,25 @@ export default function GameBoard() {
 
     const [state, setState] = useState({});
     const [value, setValue] = useState({});
+    const [words, setWords] = useState([]);
 
     function getBoard() {
         let list = document.getElementsByClassName(`inputs`);
         let arr = []
+        let dic = {}
         console.log(list)
         for (let i of list) {
+            if (dic[i.dataset.keyl] != i.value){
+                dic[i.dataset.keyl] = i.value
+            }
+
             arr.push(i.value)
         }
+
+        
+
         console.log(arr)
+        console.log(dic)
         
     }
 
@@ -26,6 +36,15 @@ export default function GameBoard() {
     useEffect(() => {
         setValue(words)
 
+
+        fetch('http://localhost:4000/crypt').then((response)=>{
+            return response.text()
+        }).then((data)=>{
+          
+            data = data.split(" ")
+            console.log(data)
+            setWords(data)
+        })
 
 
 
@@ -62,9 +81,8 @@ export default function GameBoard() {
      <div className='board'>
         {console.log("state", state)}
         {console.log("value", value)}
-
-    {words.keys.map((wordss, index)=>{
-        return <Word word={wordss} wordIndex= {words.values[index]}/>
+    {wwords.keys.map((wordss, index)=>{
+        return <Word wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
 
     <button onClick={getBoard}>Click</button>
