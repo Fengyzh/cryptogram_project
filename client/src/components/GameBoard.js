@@ -29,8 +29,25 @@ export default function GameBoard() {
         console.log(arr)
         console.log(dic)
         
+        sendBoard(arr)
     }
 
+
+    function sendBoard(data) {
+        console.log(data.join(""))
+        
+        fetch('http://localhost:4000/auth', {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({"userInput": data.join(""), "solution": data.join("")}),
+        }).then((response)=>{
+            return response.text()
+        }).then((data)=>{
+          console.log(data)
+        })
+    }
 
 
     useEffect(() => {
@@ -81,12 +98,12 @@ export default function GameBoard() {
      <div className='board'>
         {console.log("state", state)}
         {console.log("value", value)}
-    {wwords.keys.map((wordss, index)=>{
+    {words.map((wordss, index)=>{
         return <Word wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
 
     <button onClick={getBoard}>Click</button>
-
+   {/* <button onClick={sendBoard}> Send </button>*/}
     </div>
   )
 }

@@ -2,6 +2,11 @@ const express = require('express')
 const app = express()
 var cors = require('cors')
 
+app.use(express.json())
+
+app.use(cors({
+    origin: '*'
+}));
 
 app.get('/', function (req, res) {
   res.send('Hello World')
@@ -47,6 +52,43 @@ app.get("/crypt", cors(), function (req, res){
   QUOTE = "Eat more chicken.";
   let newQuote = applyKey(QUOTE, key)
   res.send(newQuote)
+})
+
+
+app.post("/auth", cors(), function(req, res){
+    
+    function validate(string_1, string_2){
+        new_str = string_2.replace(/\W/g, "").toUpperCase();
+        console.log(new_str)
+        console.log(string_1)
+        //console.log(string_2)
+        
+        if (string_1 === new_str){
+            return true;
+        }
+    
+        return false;
+    }
+
+    quote = "Eat more Chicken."
+
+    if (!req.body.hasOwnProperty("solution")){
+        res.status(400);
+        res.send();
+        return
+    }
+
+    let answer = quote; // Fetch from Array or API
+    let usrSol = req.body.userInput;
+    
+    if (validate(usrSol, answer)){
+        res.send("good");
+    } else {
+        res.send("bad");
+    }
+
+    return;
+
 })
 
 
