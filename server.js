@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios');
 const app = express()
 var cors = require('cors')
 
@@ -91,8 +92,14 @@ app.post("/auth", cors(), function(req, res){
 
 })
 
-
-
+let quotes = [];
+axios.get("https://type.fit/api/quotes").then(function (response){
+    for (let i=0; i<response.data.length; i++){
+        response.data[i].id = i
+        quotes.push(response.data[i]);
+    }
+    console.log(quotes);
+})
 
 app.listen(4000)
 console.log("Server started")
