@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Word from './Word';
 import './GameBoard.css';
 import wwords from '../data.json'
-
-
+import { GameContext } from './GameContext';
 
 export default function GameBoard() {
 
     const [state, setState] = useState({});
     const [value, setValue] = useState({});
     const [words, setWords] = useState([]);
+    const [wordsIndex, setIndex] = useState([]);
+    let c = 0
+
 
     function getBoard() {
         let list = document.getElementsByClassName(`inputs`);
@@ -96,14 +98,17 @@ export default function GameBoard() {
 
   return (
      <div className='board'>
+    <GameContext.Provider value={c}>
         {console.log("state", state)}
         {console.log("value", value)}
     {words.map((wordss, index)=>{
-        return <Word wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
+        console.log(wordss)
+         return <Word wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
 
     <button onClick={getBoard}>Click</button>
    {/* <button onClick={sendBoard}> Send </button>*/}
+   </GameContext.Provider>
     </div>
   )
 }
