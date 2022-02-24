@@ -1,15 +1,19 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import Word from './Word';
 import './GameBoard.css';
 import wwords from '../data.json'
 import { GameContext } from './GameContext';
+import Timer from './Timer';
 
 export default function GameBoard() {
 
     const [state, setState] = useState({});
     const [value, setValue] = useState({});
     const [words, setWords] = useState([]);
-    const [wordsIndex, setIndex] = useState([]);
+    const [currentWords, setCurrentWords] = useState([]);
+    const [hintAmount, setHintAmount] = useState(0);
+
+
     let c = 0
 
 
@@ -43,17 +47,92 @@ export default function GameBoard() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({"userInput": data.join(""), "solution": data.join("")}),
+        body: JSON.stringify({"userInput": data.join("").toUpperCase(), "solution": data.join("").toUpperCase()}),
         }).then((response)=>{
             return response.text()
         }).then((data)=>{
           console.log(data)
         })
+        console.log("Hint: ", hintAmount)
+    }
+
+    function getHint() {
+        let inputs = document.getElementsByClassName("inputs");
+        let keys = []
+
+        for (let i of inputs){
+            if (!keys.includes(i.value.toUpperCase())){
+                keys.push(i.value.toUpperCase())
+            }
+        }
+        console.log("keys:", keys)
+
+        // Data send to server format
+        // {userInput:keys, quoteID:xxx}
+
+
+        let temp = {"letter": "C", "index":7}
+        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        nativeInputValueSetter.call(inputs[temp["index"]], 'C');
+
+        var inputEvent = new Event('input', { bubbles: true});
+        inputs[temp["index"]].dispatchEvent(inputEvent);
+        //inputs[temp["index"]].value = "C"
+        //inputs[temp["index"]].dispatchEvent(new Event('change', { bubbles: true }))
+
+    
+        setHintAmount(prevHintAmount => prevHintAmount + 1)
+        
+    }
+
+    const [time, setTime] = useState({
+        "sec":0,
+        "min": 0,
+        "hr": 0
+    })
+    
+    let interval = useRef()
+    
+    function stopTimer() {
+        console.log(interval.current)
+        clearInterval(interval.current)
+    }
+    
+    
+    
+    function startTimer() {
+        clearInterval(interval.current)
+    
+        interval.current = setInterval(()=>{
+            let temp = time
+            temp.sec += 1
+            setTime({...time,"sec": time.sec})
+        
+            if (time.sec == 60) {
+                temp.min += 1
+                temp.sec = 0
+                setTime({...time,"sec":time.sec, "min":time.min})
+            }
+            if (time.min == 60) {
+                temp.hr += 1
+                temp.min = 0
+                temp.sec = 0
+                setTime({...time,"sec":time.sec, "min":time.min, "hr":time.hr})
+            }
+        
+        
+            console.log(time, interval)
+        }, 1000)
+        
     }
 
 
+
+
+
+
     useEffect(() => {
-        setValue(words)
+        //setValue(words)
 
 
         fetch('http://localhost:4000/crypt').then((response)=>{
@@ -84,7 +163,7 @@ export default function GameBoard() {
         }
 
         console.log(temp)
-        setState(temp)
+        //setState(temp)
 
 
         //Setting all same key field to have the same input
@@ -97,18 +176,32 @@ export default function GameBoard() {
 
 
   return (
-     <div className='board'>
+    <div>
     <GameContext.Provider value={c}>
-        {console.log("state", state)}
-        {console.log("value", value)}
+     <div className='board'>
+   
+        {/*console.log("state", state)*/}
+        {/*console.log("value", value)*/}
     {words.map((wordss, index)=>{
-        console.log(wordss)
+        //console.log(wordss)
          return <Word wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
 
+    
+    </div>
+
+
+    <div>
     <button onClick={getBoard}>Click</button>
    {/* <button onClick={sendBoard}> Send </button>*/}
-   </GameContext.Provider>
+
+    <button onClick={getHint}>Hint</button>
+    
+    <Timer time={time} setTime={setTime} start={startTimer} stop={stopTimer}/>
+    </div>
+    <h1>{time.sec}</h1>
+    </GameContext.Provider>
+    
     </div>
   )
 }

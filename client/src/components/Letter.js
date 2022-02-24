@@ -52,7 +52,7 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
           console.log("next:", next)
           next = next.firstChild
 
-         while (next != null && next.value != undefined && next.value.length != 0) {
+         while (next != null && (next.value != undefined && next.value.length != 0) || next.tagName != "INPUT") {
            console.log(666)
 
 
@@ -231,7 +231,7 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
       } 
 
       // Move to the next input field in the next word
-      console.log(e.target.parentElement.parentElement.nextSibling.firstChild)
+      //console.log(e.target.parentElement.parentElement.nextSibling.firstChild)
 
       if (e.target.parentElement.nextSibling == null && e.target.parentElement.parentElement.firstChild != null) {
         console.log(111)
