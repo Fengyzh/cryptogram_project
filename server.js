@@ -60,6 +60,7 @@ app.get("/crypt", cors(), function (req, res){
 
   function pickRandQuote(){
     let i = Math.floor( Math.random() * ( quotes.length + 1 ) );
+    console.log("currentQuote: ", quotes[i])
     return quotes[i];
   }
   
@@ -95,7 +96,18 @@ app.post("/auth", cors(), function(req, res){
     let usrSol = data.userInput;
     let id = data.id;
 
-    let answer = quotes[id].text;
+    
+    //let answer = quotes[id];
+    let answer;
+
+    //console.log(quotes)
+    
+    for (i of quotes) {
+        if (i.id === id) {
+            answer = i.text
+            console.log("yes")
+        }
+    }
     
     if (validate(usrSol, answer)){
         res.json({valid:true, score:100000});

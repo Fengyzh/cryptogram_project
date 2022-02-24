@@ -9,6 +9,9 @@ export default function GameBoard() {
 
 
     const [words, setWords] = useState([]);
+    const [quoteDetails, setQuoteDetails] = useState({
+        id:""
+    })
     //const [currentWords, setCurrentWords] = useState([]);
     const [hintAmount, setHintAmount] = useState(0);
 
@@ -46,13 +49,14 @@ export default function GameBoard() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({"userInput": data.join("").toUpperCase(), "solution": data.join("").toUpperCase()}),
+        body: JSON.stringify({id:quoteDetails.id ,"solution": data.join("").toUpperCase(), "userInput": data.join("").toUpperCase()}),
         }).then((response)=>{
             return response.text()
         }).then((data)=>{
           console.log(data)
         })
         console.log("Hint: ", hintAmount)
+        console.log("id: ", quoteDetails.id)
     }
 
     function getHint() {
@@ -135,12 +139,15 @@ export default function GameBoard() {
 
 
         fetch('http://localhost:4000/crypt').then((response)=>{
-            return response.text()
+            return response.json()
         }).then((data)=>{
-          
-            data = data.split(" ")
-            console.log(data)
-            setWords(data)
+           
+            let wordData = data.quote.split(" ")
+            let quoteID = data.id
+            console.log(wordData)
+            console.log(quoteID)
+            setWords(wordData)
+            setQuoteDetails({id: quoteID})
         })
 
 

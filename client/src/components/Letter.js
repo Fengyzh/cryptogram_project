@@ -12,7 +12,6 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
     let list = document.getElementsByClassName(`input${e.target.dataset.keyl}`);
     let allInputs = document.getElementsByClassName(`inputs`);
 
-    console.log(999)
     for (let i of list) {
       i.style.backgroundColor  =  "lightgrey"
     }
@@ -30,19 +29,36 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
 
 
     function test(e) {
-
+      let next;
       // Handles going to the next input in the same word AND going to the first input of the next word (Doesn't skip letter)
-      let next  = e.target.parentElement.nextSibling // Next Letter div
+      if (e.target !== undefined) {
+        next  = e.target.parentElement.nextSibling // Next Letter div
+      } else {
+        next = e.parentElement.nextSibling
+      }
+      console.log(111,next)
+      console.log(111, next===null? null : next.firstChild)
+
+
       if (next === null) { // If next letter is null that means this is the end of the word
-        //console.log(333)
+        console.log(333)
+        console.log("next:", next)
         next = e.target.parentElement.parentElement.nextSibling.firstChild // Correct next letter to -> The first div of the next word's first letter
+        console.log("after:",next)
+
+        if (next.firstChild.value !== undefined && next.firstChild.value != 0) {
+          console.log("rec")
+          test(next.firstChild)
+          return
+          
+        }
       }
 
 
       // Skips letter
       // If the first input of the next letter is not undefined and the length of that value is not 0 (already have an input)
       else if (next.firstChild.value !== undefined && next.firstChild.value.length !== 0) {
-        //console.log(777)
+        console.log(777)
         /*
           Known: It can jump 1 letter within the same word with "next = next.nextSibling"
           Next: Is currently at "the next input field of the current input"
@@ -52,11 +68,15 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
           next = next.firstChild
 
          while (next !== null && (next.value !== undefined && next.value.length !== 0) || next.tagName !== "INPUT") {
-           //console.log(666)
+           console.log(666)
 
 
            //End of word
            if (next.parentElement.nextSibling === null) {
+              if (next.parentElement.parentElement.nextSibling == null) {
+                return
+              }
+
               next = next.parentElement.parentElement.nextSibling.firstChild.firstChild
               console.log("next1:", next)
 
@@ -76,6 +96,10 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
        
           // Move the next pointer to the next Letter div
         console.log(next)
+      } else if (next.firstChild.value === undefined && next.parentElement.nextSibling != null) {
+        console.log(767)
+        test(next.parentElement.nextSibling.firstChild.firstChild)
+
       }
 
       if (next.firstChild !== null && next.firstChild.tagName === "INPUT") {
