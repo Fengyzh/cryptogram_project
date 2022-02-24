@@ -4,6 +4,7 @@ const app = express()
 var cors = require('cors')
 
 app.use(express.json())
+app.use(express.static("public"))
 
 app.use(cors({
     origin: '*'
@@ -13,6 +14,14 @@ app.get('/', function (req, res) {
   res.send('Hello World')
 })
 
+let quotes = [];
+axios.get("https://type.fit/api/quotes").then(function (response){
+    for (let i=0; i<response.data.length; i++){
+        response.data[i].id = i
+        quotes.push(response.data[i]);
+    }
+    // console.log(quotes);
+})
 
 //Function utilizes Fisher-Yates algorithm for randomizing
 //Source Code: http://sedition.com/perl/javascript-fy.html
@@ -48,11 +57,16 @@ app.get("/crypt", cors(), function (req, res){
       }
       return encrypt
   }
+
+  function pickRandQuote(){
+    let i = Math.floor( Math.random() * ( quotes.length + 1 ) );
+    return quotes[i];
+  }
   
   key = randomizedKey();
-  QUOTE = "Eat more, chicken.";
-  let newQuote = applyKey(QUOTE, key)
-  res.send(newQuote)
+  let quote = pickRandQuote();
+  let newQuote = applyKey(quote.text, key)
+  res.json({id:quote.id, quote:newQuote, author:quote.author})
 })
 
 
@@ -60,9 +74,8 @@ app.post("/auth", cors(), function(req, res){
     
     function validate(string_1, string_2){
         new_str = string_2.replace(/\W/g, "").toUpperCase();
-        console.log("new:" + new_str)
-        //console.log(string_1)
-        console.log("req:" + req.body.solution)
+        console.log(new_str)
+        console.log(string_1)
         //console.log(string_2)
         
         if (string_1 === new_str){
@@ -72,34 +85,26 @@ app.post("/auth", cors(), function(req, res){
         return false;
     }
 
-    quote = "Eat more Chicken."
-
     if (!req.body.hasOwnProperty("solution")){
         res.status(400);
         res.send();
         return
     }
 
-    let answer = quote; // Fetch from Array or API
-    let usrSol = req.body.userInput;
+    let data = req.body;
+    let usrSol = data.userInput;
+    let id = data.id;
+
+    let answer = quotes[id].text;
     
     if (validate(usrSol, answer)){
-        res.send("good");
+        res.json({valid:true, score:100000});
     } else {
-        res.send("bad");
+        res.json({valid:false});
     }
 
     return;
 
-})
-
-let quotes = [];
-axios.get("https://type.fit/api/quotes").then(function (response){
-    for (let i=0; i<response.data.length; i++){
-        response.data[i].id = i
-        quotes.push(response.data[i]);
-    }
-    console.log(quotes);
 })
 
 app.listen(4000)
