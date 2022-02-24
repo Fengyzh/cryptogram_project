@@ -42,7 +42,7 @@ export default function GameBoard() {
         console.log(data.join(""))
         
         fetch('http://localhost:4000/auth', {
-        method: 'POST', // or 'PUT'
+        method: 'POST', 
         headers: {
             'Content-Type': 'application/json',
         },
