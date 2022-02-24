@@ -1,16 +1,15 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Word from './Word';
 import './GameBoard.css';
-import wwords from '../data.json'
 import { GameContext } from './GameContext';
 import Timer from './Timer';
 
+
 export default function GameBoard() {
 
-    const [state, setState] = useState({});
-    const [value, setValue] = useState({});
+
     const [words, setWords] = useState([]);
-    const [currentWords, setCurrentWords] = useState([]);
+    //const [currentWords, setCurrentWords] = useState([]);
     const [hintAmount, setHintAmount] = useState(0);
 
 
@@ -21,9 +20,9 @@ export default function GameBoard() {
         let list = document.getElementsByClassName(`inputs`);
         let arr = []
         let dic = {}
-        console.log(list)
+        //console.log(list)
         for (let i of list) {
-            if (dic[i.dataset.keyl] != i.value){
+            if (dic[i.dataset.keyl] !== i.value){
                 dic[i.dataset.keyl] = i.value
             }
 
@@ -32,8 +31,8 @@ export default function GameBoard() {
 
         
 
-        console.log(arr)
-        console.log(dic)
+        //console.log(arr)
+        //console.log(dic)
         
         sendBoard(arr)
     }
@@ -108,12 +107,12 @@ export default function GameBoard() {
             temp.sec += 1
             setTime({...time,"sec": time.sec})
         
-            if (time.sec == 60) {
+            if (time.sec === 60) {
                 temp.min += 1
                 temp.sec = 0
                 setTime({...time,"sec":time.sec, "min":time.min})
             }
-            if (time.min == 60) {
+            if (time.min === 60) {
                 temp.hr += 1
                 temp.min = 0
                 temp.sec = 0
@@ -192,10 +191,10 @@ export default function GameBoard() {
 
 
     <div>
-    <button onClick={getBoard}>Click</button>
+    <button onClick={getBoard} className="button">Submit</button>
    {/* <button onClick={sendBoard}> Send </button>*/}
 
-    <button onClick={getHint}>Hint</button>
+    <button onClick={getHint} className="button">Hint</button>
     
     <Timer time={time} setTime={setTime} start={startTimer} stop={stopTimer}/>
     </div>

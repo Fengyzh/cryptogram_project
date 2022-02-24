@@ -3,7 +3,6 @@ import { GameContext } from './GameContext';
 
 export default function Letter({keyLetter, fieldValue, lIndex}) {
 
-  const [state, setState] = useState([]);
   const { index, setIndex } = useContext(GameContext);
 
 
@@ -15,11 +14,11 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
 
     console.log(999)
     for (let i of list) {
-      i.style.backgroundColor  =  "tomato"
+      i.style.backgroundColor  =  "lightgrey"
     }
 
     for (let j of allInputs) {
-      if (j.dataset.keyl != e.target.dataset.keyl) {
+      if (j.dataset.keyl !== e.target.dataset.keyl) {
         j.style.backgroundColor = "transparent"
       }
     }
@@ -34,30 +33,30 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
 
       // Handles going to the next input in the same word AND going to the first input of the next word (Doesn't skip letter)
       let next  = e.target.parentElement.nextSibling // Next Letter div
-      if (next == null) { // If next letter is null that means this is the end of the word
-        console.log(333)
+      if (next === null) { // If next letter is null that means this is the end of the word
+        //console.log(333)
         next = e.target.parentElement.parentElement.nextSibling.firstChild // Correct next letter to -> The first div of the next word's first letter
       }
 
 
       // Skips letter
       // If the first input of the next letter is not undefined and the length of that value is not 0 (already have an input)
-      else if (next.firstChild.value != undefined && next.firstChild.value.length != 0) {
-        console.log(777)
+      else if (next.firstChild.value !== undefined && next.firstChild.value.length !== 0) {
+        //console.log(777)
         /*
           Known: It can jump 1 letter within the same word with "next = next.nextSibling"
           Next: Is currently at "the next input field of the current input"
-          TODO: Skip multiple letters in the same word
+          TODO: Skip multiple letters in the same word (Finished)
         */
           console.log("next:", next)
           next = next.firstChild
 
-         while (next != null && (next.value != undefined && next.value.length != 0) || next.tagName != "INPUT") {
-           console.log(666)
+         while (next !== null && (next.value !== undefined && next.value.length !== 0) || next.tagName !== "INPUT") {
+           //console.log(666)
 
 
            //End of word
-           if (next.parentElement.nextSibling == null) {
+           if (next.parentElement.nextSibling === null) {
               next = next.parentElement.parentElement.nextSibling.firstChild.firstChild
               console.log("next1:", next)
 
@@ -79,9 +78,9 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
         console.log(next)
       }
 
-      if (next.firstChild != null && next.firstChild.tagName == "INPUT") {
+      if (next.firstChild !== null && next.firstChild.tagName === "INPUT") {
         next.firstChild.focus()
-      } else if (next.tagName == "INPUT") {
+      } else if (next.tagName === "INPUT") {
         next.focus()
       }
 
@@ -186,41 +185,6 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
         
 
 
-
-         /*
-        stack = dict.map(function(item){ return item[`${e.target.dataset.keyl}`] });
-         
-        if (new Set(stack).size !== stack.length) {
-            for (let i of list) {
-              i.style.color = "red"
-            }
-        }
-*/
-
-
-
-         /*
-      for (const [key, value] of Object.entries(dict)) {
-          if (stack.includes(value) && value != "") {
-            console.log(stack.includes(value) && value != "")
-            console.log("stack: ", stack)
-            for (let i of list) {
-              
-                i.style.color="red"
-              
-             
-            }
-          } else {
-            for (let i of list) {
-              if (i.dataset.keyl == key){
-                i.style.color="black"
-              } 
-             
-            }
-            stack.push(value)
-          }
-        }
-        */
 
         // Move to the next input field in this word
         

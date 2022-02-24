@@ -50,7 +50,7 @@ app.get("/crypt", cors(), function (req, res){
   }
   
   key = randomizedKey();
-  QUOTE = "Eat more chicken.";
+  QUOTE = "Eat more, chicken.";
   let newQuote = applyKey(QUOTE, key)
   res.send(newQuote)
 })
@@ -60,8 +60,9 @@ app.post("/auth", cors(), function(req, res){
     
     function validate(string_1, string_2){
         new_str = string_2.replace(/\W/g, "").toUpperCase();
-        console.log(new_str)
-        console.log(string_1)
+        console.log("new:" + new_str)
+        //console.log(string_1)
+        console.log("req:" + req.body.solution)
         //console.log(string_2)
         
         if (string_1 === new_str){
