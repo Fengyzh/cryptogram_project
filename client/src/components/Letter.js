@@ -32,18 +32,44 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
       let next;
       // Handles going to the next input in the same word AND going to the first input of the next word (Doesn't skip letter)
       if (e.target !== undefined) {
+
+        //if (e.target.parentElement.nextSibling == null && ) {
+
+        //}
+
+
         next  = e.target.parentElement.nextSibling // Next Letter div
+        
+
       } else {
         next = e.parentElement.nextSibling
       }
+      
+      console.log("value:", e.value)
+      console.log("length", e.value? e.value.length : null)
+      if (e.value !== undefined && e.value.length === 0 && e.tagName === "INPUT") {
+        console.log(989)
+        e.focus()
+        return
+      }
+      
+      
       console.log(111,next)
-      console.log(111, next===null? null : next.firstChild)
-
+      console.log(111, next===null? null : (next.firstChild, console.log("first")))
+     
 
       if (next === null) { // If next letter is null that means this is the end of the word
         console.log(333)
         console.log("next:", next)
+
+        if (e.target == undefined){
+            next = e.parentElement.parentElement.nextSibling.firstChild
+        } else {
+
+
         next = e.target.parentElement.parentElement.nextSibling.firstChild // Correct next letter to -> The first div of the next word's first letter
+        }
+
         console.log("after:",next)
 
         if (next.firstChild.value !== undefined && next.firstChild.value != 0) {
@@ -96,18 +122,21 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
        
           // Move the next pointer to the next Letter div
         console.log(next)
+        
       } else if (next.firstChild.value === undefined && next.parentElement.nextSibling != null) {
         console.log(767)
+        console.log("next sis: ", next.parentElement.nextSibling)
         test(next.parentElement.nextSibling.firstChild.firstChild)
 
       }
 
+      
       if (next.firstChild !== null && next.firstChild.tagName === "INPUT") {
         next.firstChild.focus()
       } else if (next.tagName === "INPUT") {
         next.focus()
       }
-
+      console.log("focus")
 
 
       /*
@@ -157,6 +186,11 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
       let stack = []
       
       console.log("indexxxx: ", e.target.dataset.inputindex)
+
+      if (!(e.target.value.length === 1 && e.target.value.match(/[a-z]/i))) {
+        e.target.value = ""
+        return
+      }
 
 
       for (let i of list) {

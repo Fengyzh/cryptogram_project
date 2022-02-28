@@ -148,6 +148,10 @@ export default function GameBoard() {
             console.log(quoteID)
             setWords(wordData)
             setQuoteDetails({id: quoteID})
+
+        }).then(()=>{
+            let first = document.getElementsByClassName("inputs");
+            first[0].focus()
         })
 
 
@@ -173,9 +177,7 @@ export default function GameBoard() {
 
 
         //Setting all same key field to have the same input
- 
-
-
+        
        
       },[]);
 
@@ -206,6 +208,8 @@ export default function GameBoard() {
     <Timer time={time} setTime={setTime} start={startTimer} stop={stopTimer}/>
     </div>
     <h1>{time.sec}</h1>
+
+    
     </GameContext.Provider>
     
     </div>
