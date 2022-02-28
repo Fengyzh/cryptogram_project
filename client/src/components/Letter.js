@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { GameContext } from './GameContext';
 
-export default function Letter({keyLetter, fieldValue, lIndex}) {
+export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex}) {
 
   const { index, setIndex } = useContext(GameContext);
 
@@ -184,6 +184,11 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
       let allInputs = document.getElementsByClassName(`inputs`);
       let dict = {}
       let stack = []
+
+      if (!timer) {
+        setTimer(true)
+      }
+
       
       console.log("indexxxx: ", e.target.dataset.inputindex)
 

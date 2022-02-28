@@ -42,6 +42,10 @@ export default function GameBoard() {
 
 
     function sendBoard(data) {
+        
+        // TODO: Put stopTimer() when you recevice a valid response
+        // Do nothing when the response is not valid (user input not right)
+
         console.log(data.join(""))
         
         fetch('http://localhost:4000/auth', {
@@ -94,17 +98,21 @@ export default function GameBoard() {
         "hr": 0
     })
     
+    const [timerStart, setTimerStart] = useState(false)
+
     let interval = useRef()
     
     function stopTimer() {
         console.log(interval.current)
         clearInterval(interval.current)
+        setTimerStart(false)
     }
     
     
     
     function startTimer() {
         clearInterval(interval.current)
+        setTimerStart(true)
     
         interval.current = setInterval(()=>{
             let temp = time
@@ -192,7 +200,7 @@ export default function GameBoard() {
         {/*console.log("value", value)*/}
     {words.map((wordss, index)=>{
         //console.log(wordss)
-         return <Word wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
+         return <Word timer={timerStart} setTimer = {startTimer} wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
 
     

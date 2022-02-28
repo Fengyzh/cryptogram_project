@@ -4,7 +4,7 @@ import './Word.css'
 import { GameContext } from './GameContext'
 
 
-export default function Word({word, wordIndex, wIndex}) {
+export default function Word({timer, setTimer, word, wordIndex, wIndex}) {
 
   let count = 0
   const puncuation = [",", ".", ":", "\"", "\'", ";", "!", "?"]
@@ -24,7 +24,7 @@ export default function Word({word, wordIndex, wIndex}) {
              count -=1
             return <div className='Letters'>{letter} </div>
            } else {
-             return <Letter lIndex={wIndex} fieldValue={" "} keyLetter={letter}/> 
+             return <Letter timer = {timer} setTimer = {setTimer} lIndex={wIndex} fieldValue={" "} keyLetter={letter}/> 
            }
 
 /*
