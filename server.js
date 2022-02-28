@@ -39,9 +39,26 @@ app.get("/crypt", cors(), function (req, res){
           }
       }
       let alphabet =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-      fisherYates(alphabet)
-      return alphabet
-  }
+      let key =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+        fisherYates(key)
+        while (true){
+            let match = false
+            for (let j = 0; j<26; j++){
+                if (alphabet[j] === key[j]){
+                    match = true;
+                }
+            }
+            if (match === true){
+                fisherYates(key)
+            } else {
+                break;
+            }
+        }
+        return key
+    }
+      //fisherYates(alphabet)
+      //return alphabet
+  
   
   function applyKey(string, key){
       let alphabet =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]

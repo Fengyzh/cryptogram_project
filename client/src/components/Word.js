@@ -7,7 +7,7 @@ import { GameContext } from './GameContext'
 export default function Word({word, wordIndex, wIndex}) {
 
   let count = 0
-  const puncuation = [",", ".", ":", ""]
+  const puncuation = [",", ".", ":", "\"", "\'", ";", "!", "?"]
   let c  = useContext(GameContext);
 
   
@@ -22,7 +22,7 @@ export default function Word({word, wordIndex, wIndex}) {
            count+=1
            if (puncuation.includes(letter)) {
              count -=1
-            return <div>{letter} </div>
+            return <div className='Letters'>{letter} </div>
            } else {
              return <Letter lIndex={wIndex} fieldValue={" "} keyLetter={letter}/> 
            }

@@ -160,14 +160,14 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
 
 
       for (let i of list) {
-        i.value = e.target.value
+        i.value = e.target.value.toUpperCase()
         console.log(i.dataset.keyl)
         
       }
 
       for (let j of allInputs) {
-          if (dict[j.dataset.keyl] != j.value){
-            dict[j.dataset.keyl] = j.value
+          if (dict[j.dataset.keyl] != j.value.toUpperCase()){
+            dict[j.dataset.keyl] = j.value.toUpperCase()
         }
       }
 
@@ -182,8 +182,8 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
         for(var i = 0; i<keys.length; i++){ // Go through every key in the arry
           //var dupe = false;
           for(var j = i+1; j<keys.length; j++){ // j = i + 1 and not j = 0 because you don't want to check 2 keys' value bc they will always be the same. This still checks for dups because even if i is at the second to last digit, if there is a dup, it wouldve be added to the list already in one of the early iterations
-            if(dict[keys[i]] === dict[keys[j]] && dict[keys[i]] != ""){
-              stack.push(dict[keys[i]])
+            if(dict[keys[i]].toUpperCase() === dict[keys[j]].toUpperCase() && dict[keys[i]] != ""){
+              stack.push(dict[keys[i]].toUpperCase())
               //dupe = true;
             }
            
@@ -192,7 +192,7 @@ export default function Letter({keyLetter, fieldValue, lIndex}) {
         //if(dupe){ console.log("dupe value is there.."); } 
       }
 
-      if (stack.includes(e.target.value)) {
+      if (stack.includes(e.target.value.toUpperCase())) {
         for (let k of list ) {
           k.style.color = "red"
         }
