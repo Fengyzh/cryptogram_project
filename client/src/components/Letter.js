@@ -273,9 +273,9 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
   }
 
   return (
-    <div>
+    <div className='input-div'>
         <input className={`inputs input${keyLetter}`} data-inputIndex= {index} data-index={lIndex} onFocus={selectColor} onChange={getValues} data-keyL={keyLetter} maxLength="1"/>
-        <div><h1>{keyLetter}</h1></div>
+        <div><h1 className='keys'>{keyLetter}</h1></div>
 
     </div>
   )

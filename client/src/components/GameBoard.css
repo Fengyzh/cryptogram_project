@@ -10,18 +10,26 @@ body {
 }
 
 .inputs {
-    width: 80px;
+    width: 70px;
     text-align: center;
     outline: none;
     border: none;
     border-bottom: 3px solid black;
     margin: 0 5px;
-    font-size: large;
+    font-size: 2.5rem;
     text-transform: uppercase;
 }
 
 .Letters {
     font-size: 3.5rem;
-    line-height: 10px;
+    line-height: 4rem;
 
+}
+
+.keys{
+    color: rgb(128, 128, 128);
+}
+
+.input-div{
+    margin: 15px 0;
 }
