@@ -71,27 +71,51 @@ export default function GameBoard() {
         console.log("id: ", quoteDetails.id)
     }
 
+
+
+
+    // Hint Request
+
     function getHint() {
+
+        // Get all the input tags
         let inputs = document.getElementsByClassName("inputs");
+
+        // Use to store letters that the user already entered, they will be unique
         let keys = []
 
+        // Loop through all the inputs
         for (let i of inputs){
+
+            // If there is a key in the input that is not in the key array, append it
             if (!keys.includes(i.value.toUpperCase())){
                 keys.push(i.value.toUpperCase())
             }
         }
+
+        // Should print out all the keys that the user entered
         console.log("keys:", keys)
 
         // Data send to server format
         // {userInput:keys, quoteID:xxx}
 
 
+        // HARD CODE test purposes showing that the server should send back
+        // letter: The letter that server gives as a hint; index: the first occurence of that key in the quote array 
         let temp = {"letter": "C", "index":7}
+
+         // Grab the input in the provided index and put "C" (the hint letter) in it
         var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
         nativeInputValueSetter.call(inputs[temp["index"]], 'C');
 
+
+        // Re-render OnChnage event so that it will fill in other input fields with the same key as the key provided by the hint
         var inputEvent = new Event('input', { bubbles: true});
         inputs[temp["index"]].dispatchEvent(inputEvent);
+        
+        
+        
+        //-----------DEBUG---------------//
         //inputs[temp["index"]].value = "C"
         //inputs[temp["index"]].dispatchEvent(new Event('change', { bubbles: true }))
 
