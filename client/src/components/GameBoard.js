@@ -14,6 +14,7 @@ export default function GameBoard() {
     })
     //const [currentWords, setCurrentWords] = useState([]);
     const [hintAmount, setHintAmount] = useState(0);
+    const [finish, setFinish] = useState(false);
 
 
     let c = 0
@@ -55,10 +56,17 @@ export default function GameBoard() {
         },
         body: JSON.stringify({id:quoteDetails.id ,"solution": data.join("").toUpperCase(), "userInput": data.join("").toUpperCase()}),
         }).then((response)=>{
-            return response.text()
+            return response.json()
         }).then((data)=>{
-          console.log(data)
+          console.log("valid data", data)
+          if (data.valid) {
+              setTimerStart(false)
+              stopTimer()
+              setFinish(true)
+              
+          }
         })
+        
         console.log("Hint: ", hintAmount)
         console.log("id: ", quoteDetails.id)
     }
@@ -137,6 +145,10 @@ export default function GameBoard() {
         
     }
 
+    function handleRefresh() {
+        window.location.reload(false)
+    }
+
 
 
 
@@ -193,7 +205,17 @@ export default function GameBoard() {
 
   return (
     <div>
+        {finish? 
+        <div className='finish-cover'>
+           <div className='finish-title-wrapper'> 
+            <h1 className='finish-title'> Correct! </h1>
+            <button className='finish-btn' onClick={handleRefresh}> New Game </button>
+            </div> 
+        </div> :
+
+
     <GameContext.Provider value={c}>
+    <h1> Welcome to Cryptogram </h1>
      <div className='board'>
    
         {/*console.log("state", state)*/}
@@ -219,7 +241,7 @@ export default function GameBoard() {
 
     
     </GameContext.Provider>
-    
+}
     </div>
   )
 }

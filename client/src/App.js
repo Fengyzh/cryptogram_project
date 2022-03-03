@@ -5,7 +5,6 @@ import GameBoard from './components/GameBoard';
 function App() {
   return (
     <div className="App">
-      <h1> Welcome to Cryptogram </h1>
       <GameBoard/>
     </div>
   );
