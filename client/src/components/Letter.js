@@ -4,6 +4,8 @@ import { GameContext } from './GameContext';
 export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex}) {
 
   const { index, setIndex } = useContext(GameContext);
+  //const [stk, setStk] = useState([]);
+  //const [allInputs, setAllInputs] = useState();
 
 
     let letterList = []
@@ -182,39 +184,39 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
     function getValues(e) {
       let list = document.getElementsByClassName(`input${e.target.dataset.keyl}`);
       let allInputs = document.getElementsByClassName(`inputs`);
+      //setAllInputs(allInputs);
       let dict = {}
       let stack = []
 
       if (!timer) {
-        setTimer(true)
+        //setTimer(true)
       }
 
       
-      console.log("indexxxx: ", e.target.dataset.inputindex)
+      //console.log("indexxxx: ", e.target.dataset.inputindex) // DEBUG
 
+
+      // BUG
       if (!(e.target.value.length === 1 && e.target.value.match(/[a-z]/i))) {
         e.target.value = ""
-        return
+        //return
       }
 
-
+      // Populate all the fields with the same key with the value the user inputted
       for (let i of list) {
         i.value = e.target.value.toUpperCase()
         console.log(i.dataset.keyl)
         
       }
 
+      // Populates the dictionary that keeps track of all the keys and their user input values
       for (let j of allInputs) {
           if (dict[j.dataset.keyl] != j.value.toUpperCase()){
             dict[j.dataset.keyl] = j.value.toUpperCase()
         }
       }
-
-      /* Current: If there is a value that is dup, it will make
-         every input you click color red
-      */
-
       
+
         var keys = Object.keys(dict);
         console.log(keys)
 
@@ -228,10 +230,33 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
            
         }
        
-        //if(dupe){ console.log("dupe value is there.."); } 
       }
+      console.log("stack: ", stack)
+      //setStk(stack)
 
-      if (stack.includes(e.target.value.toUpperCase())) {
+
+
+
+      //--------------------------------------
+
+      for (let k of allInputs) {
+        k.style.color = "black"
+
+
+      //if (stack.includes(e.target.value.toUpperCase())) {
+
+        //console.log("in:")
+        /*
+          if (k.value === e.target.value.toUpperCase()) {
+            k.style.color = "red"
+          } */
+          if (stack.includes(k.value)) {
+            k.style.color = "red"
+          }
+
+        //}
+
+        /*
         for (let k of list ) {
           k.style.color = "red"
         }
@@ -239,9 +264,10 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         for (let k of list ) {
           k.style.color = "black"
         }
+        */
       }
 
-      console.log(stack)
+     
       //console.log("dupe: " , dupe)
  
 
@@ -251,7 +277,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
 
         // Move to the next input field in this word
         
-      if (e.target.parentElement.nextSibling != null && e.target.value.length == 1) {
+      if (e.target.parentElement.nextSibling != null && e.target.value.length == 1 && e.target.value != "") {
         //e.target.parentElement.nextSibling.firstChild.focus()
         console.log(222)
         test(e)
@@ -260,7 +286,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       // Move to the next input field in the next word
       //console.log(e.target.parentElement.parentElement.nextSibling.firstChild)
 
-      if (e.target.parentElement.nextSibling == null && e.target.parentElement.parentElement.firstChild != null) {
+      if (e.target.parentElement.nextSibling == null && e.target.parentElement.parentElement.firstChild != null && e.target.value != "") {
         console.log(111)
         //e.target.parentElement.parentElement.nextSibling.firstChild.firstChild.focus()
         test(e)
@@ -272,9 +298,12 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
      
   }
 
+
+
+
   return (
     <div className='input-div'>
-        <input className={`inputs input${keyLetter}`} data-inputIndex= {index} data-index={lIndex} onFocus={selectColor} onChange={getValues} data-keyL={keyLetter} maxLength="1"/>
+        <input className={`inputs input${keyLetter}`} data-inputIndex= {index} data-index={lIndex} onFocus={selectColor} onChange={getValues}  data-keyL={keyLetter} maxLength="1"/>
         <div><h1 className='keys'>{keyLetter}</h1></div>
 
     </div>

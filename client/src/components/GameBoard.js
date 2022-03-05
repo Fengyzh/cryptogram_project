@@ -33,22 +33,22 @@ export default function GameBoard() {
             arr.push(i.value)
         }
 
-        
+
 
         //console.log(arr)
         //console.log(dic)
-        
+
         sendBoard(arr)
     }
 
 
     function sendBoard(data) {
-        
+
         // TODO: Put stopTimer() when you recevice a valid response
         // Do nothing when the response is not valid (user input not right)
 
         console.log(data.join(""))
-        
+
         fetch('http://localhost:4000/auth', {
         method: 'POST', 
         headers: {
@@ -60,13 +60,13 @@ export default function GameBoard() {
         }).then((data)=>{
           console.log("valid data", data)
           if (data.valid) {
-              setTimerStart(false)
-              stopTimer()
+              setTimerOn(false)
+              toggleTimer(false)
               setFinish(true)
-              
+
           }
         })
-        
+
         console.log("Hint: ", hintAmount)
         console.log("id: ", quoteDetails.id)
     }
@@ -74,109 +74,158 @@ export default function GameBoard() {
 
 
 
-    // Hint Request
+    //Functionality for the Hint Component
+function getHint() {
 
-    function getHint() {
+    // Hard Code sample of what the server will send back
+    let temp = {"letter": "C", "index":7}
 
-        // Get all the input tags
-        let inputs = document.getElementsByClassName("inputs");
+    // Get all the input tags
+    let inputs = document.getElementsByClassName("inputs");
 
-        // Use to store letters that the user already entered, they will be unique
-        let keys = []
+    // Use to store letters that the user already entered, they will be unique
 
-        // Loop through all the inputs
-        for (let i of inputs){
+    // Pick a random number
+    let rand = Math.floor(Math.random() * (inputs.length));
+    
+    let hintInputField = inputs[rand]
 
-            // If there is a key in the input that is not in the key array, append it
-            if (!keys.includes(i.value.toUpperCase())){
-                keys.push(i.value.toUpperCase())
-            }
+    // While the randomly selected input field is not empty (Already has a value)
+    // Re-select another field
+    while (hintInputField.value !== "") {
+        rand = Math.floor(Math.random() * (inputs.length));
+    
+        hintInputField = inputs[rand]
+    }
+
+
+
+
+    /* Fetch Request when hint amount is < 5 */ 
+    if (hintAmount < 5) {
+    fetch('http://localhost:4000/hint', {
+    method: 'POST', 
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({"quoteID":quoteDetails.id , "userInput": rand}),
+    }).then((response)=>{
+        return response.json()
+    }).then((data)=>{
+        console.log(data)
+
+    // Input value via code    
+    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    nativeInputValueSetter.call(hintInputField, data.letter);
+
+
+    // Re-render OnChnage event so that it will fill in other input fields with the same key as the key provided by the hint
+    var inputEvent = new Event('input', { bubbles: true});
+    hintInputField.dispatchEvent(inputEvent);
+
+    // Disable all input field with the same key after hint request
+    for (let i of inputs) {
+        if (i.dataset.keyl == hintInputField.dataset.keyl) {
+            i.disabled = true;
         }
-
-        // Should print out all the keys that the user entered
-        console.log("keys:", keys)
-
-        // Data send to server format
-        // {userInput:keys, quoteID:xxx}
-
-
-        // HARD CODE test purposes showing that the server should send back
-        // letter: The letter that server gives as a hint; index: the first occurence of that key in the quote array 
-        let temp = {"letter": "C", "index":7}
-
-         // Grab the input in the provided index and put "C" (the hint letter) in it
-        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-        nativeInputValueSetter.call(inputs[temp["index"]], 'C');
-
-
-        // Re-render OnChnage event so that it will fill in other input fields with the same key as the key provided by the hint
-        var inputEvent = new Event('input', { bubbles: true});
-        inputs[temp["index"]].dispatchEvent(inputEvent);
-        
-        
-        
-        //-----------DEBUG---------------//
-        //inputs[temp["index"]].value = "C"
-        //inputs[temp["index"]].dispatchEvent(new Event('change', { bubbles: true }))
-
-    
-        setHintAmount(prevHintAmount => prevHintAmount + 1)
-        
     }
 
-    const [time, setTime] = useState({
-        "sec":0,
-        "min": 0,
-        "hr": 0
+
     })
-    
-    const [timerStart, setTimerStart] = useState(false)
 
-    let interval = useRef()
+    // Increment hint count
+    setHintAmount(prevHintAmount => prevHintAmount + 1)
+}
     
-    function stopTimer() {
-        console.log(interval.current)
-        clearInterval(interval.current)
-        setTimerStart(false)
+
+// Cookie Test
+
+if (document.cookie) {
+    document.cookie = "id=101; expires=Thu, 18 Dec 2022 12:00:00 UTC;";
+} else {
+    document.cookie = "id=100; expires=Thu, 18 Dec 2022 12:00:00 UTC;";
+}
+    
+
+
+    //console.log(hintInputField)  //DEBUG
+    console.log("rand", rand)  //DEBUG
+
+
+
+
+    /*
+    // Loop through all the inputs
+    for (let i of inputs){
+
+        // If there is a key in the input that is not in the key array, append it
+        if (!keys.includes(i.value.toUpperCase())){
+            keys.push(i.value.toUpperCase())
+        }
     }
+
+    // Should print out all the keys that the user entered
+    console.log("keys:", keys)
+
+    // Data send to server format
+    // {userInput:keys, quoteID:xxx}
+
+
+    // HARD CODE test purposes showing that the server should send back
+    // letter: The letter that server gives as a hint; index: the first occurence of that key in the quote array 
+    let temp = {"letter": "C", "index":7}
+
+        // Grab the input in the provided index and put "C" (the hint letter) in it
+    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    nativeInputValueSetter.call(inputs[temp["index"]], 'C');
+
+
+    // Re-render OnChnage event so that it will fill in other input fields with the same key as the key provided by the hint
+    var inputEvent = new Event('input', { bubbles: true});
+    inputs[temp["index"]].dispatchEvent(inputEvent);
+    */
     
     
+    //-----------DEBUG---------------//
+    //inputs[temp["index"]].value = "C"
+    //inputs[temp["index"]].dispatchEvent(new Event('change', { bubbles: true }))
+
+
     
-    function startTimer() {
-        clearInterval(interval.current)
-        setTimerStart(true)
     
-        interval.current = setInterval(()=>{
-            let temp = time
-            temp.sec += 1
-            setTime({...time,"sec": time.sec})
-        
-            if (time.sec === 60) {
-                temp.min += 1
-                temp.sec = 0
-                setTime({...time,"sec":time.sec, "min":time.min})
-            }
-            if (time.min === 60) {
-                temp.hr += 1
-                temp.min = 0
-                temp.sec = 0
-                setTime({...time,"sec":time.sec, "min":time.min, "hr":time.hr})
-            }
-        
-        
-            console.log(time, interval)
-        }, 1000)
-        
+}
+
+    //Functionality for for Timer
+    //Initiate Timer
+    const [time, setTime] = useState({
+        "sec": 0,
+    })
+
+    //When page loads, Timer is initially turned off
+    const [timerOn, setTimerOn] = useState(false)
+
+    //Set Interval for Timer use
+    let interval = useRef(0)
+
+    //Starts or clears timer depending on whether timer is enabled or not.
+    //timerOn is set to the value of the input boolean flag.
+    //If timer is (expected to be) available, increment the timer every second.
+    function toggleTimer(timeFlag){
+        clearInterval(interval.current);
+        setTimerOn(timeFlag);
+
+        if (timeFlag){
+            interval.current = setInterval(()=>{
+                let temp = time;
+                temp.sec += 1;
+                setTime({"sec": temp.sec});
+            }, 1000)
+        }
     }
 
     function handleRefresh() {
         window.location.reload(false)
     }
-
-
-
-
-
 
     useEffect(() => {
         //setValue(words)
@@ -185,7 +234,7 @@ export default function GameBoard() {
         fetch('http://localhost:4000/crypt').then((response)=>{
             return response.json()
         }).then((data)=>{
-           
+
             let wordData = data.quote.split(" ")
             let quoteID = data.id
             console.log(wordData)
@@ -221,8 +270,8 @@ export default function GameBoard() {
 
 
         //Setting all same key field to have the same input
-        
-       
+
+
       },[]);
 
 
@@ -241,15 +290,15 @@ export default function GameBoard() {
     <GameContext.Provider value={c}>
     <h1> Welcome to Cryptogram </h1>
      <div className='board'>
-   
+
         {/*console.log("state", state)*/}
         {/*console.log("value", value)*/}
     {words.map((wordss, index)=>{
         //console.log(wordss)
-         return <Word timer={timerStart} setTimer = {startTimer} wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
+         return <Word timer={timerOn} setTimer = {() => toggleTimer(true)} wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
 
-    
+
     </div>
 
 
@@ -258,12 +307,12 @@ export default function GameBoard() {
    {/* <button onClick={sendBoard}> Send </button>*/}
 
     <button onClick={getHint} className="button">Hint</button>
-    
-    <Timer time={time} setTime={setTime} start={startTimer} stop={stopTimer}/>
+
+    <Timer time={time} start={() => toggleTimer(true)} stop={() => toggleTimer(false)}/>
     </div>
     <h1>{time.sec}</h1>
 
-    
+
     </GameContext.Provider>
 }
     </div>
