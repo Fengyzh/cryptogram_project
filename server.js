@@ -14,6 +14,8 @@ app.get('/', function (req, res) {
   res.send('Hello World')
 })
 
+//Request grabs a large amounts of quote from a 3rd-party API, type.fit,
+//and stores it in a local list. Each list is appended with an identifier number.
 let quotes = [];
 axios.get("https://type.fit/api/quotes").then(function (response){
     for (let i=0; i<response.data.length; i++){
@@ -25,6 +27,9 @@ axios.get("https://type.fit/api/quotes").then(function (response){
 
 //Function utilizes Fisher-Yates algorithm for randomizing
 //Source Code: http://sedition.com/perl/javascript-fy.html
+//
+//Function randomizes and encrypts a key (gaurenteed to not match any original positions)
+//Sends it to the client.
 app.get("/crypt", cors(), function (req, res){
   function randomizedKey(){
       function fisherYates ( myArray ) {
@@ -134,6 +139,26 @@ app.post("/auth", cors(), function(req, res){
 
     return;
 
+})
+
+//Handles selecting a letter for hint.
+//Expects the form {userInput: String, quoteID:int}
+app.post("/hint", cors(), function(req, res){
+    let quoteID = req.body.quoteID;
+    let pos = req.body.userInput;
+    let answer;
+
+    //Find quote according to ID
+    for (i of quotes) {
+        if (i.id === quoteID) {
+            answer = i.text;
+        }
+    }
+
+    fmtQuote = answer.replace(/\W/g, "");
+    
+    res.json({"letter": fmtQuote[pos], "pos": pos});
+    return
 })
 
 app.listen(4000)
