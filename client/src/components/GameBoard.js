@@ -15,6 +15,7 @@ export default function GameBoard() {
     //const [currentWords, setCurrentWords] = useState([]);
     const [hintAmount, setHintAmount] = useState(0);
     const [finish, setFinish] = useState(false);
+    const [finishPageData, setFinishPageData] = useState({})
 
 
     let c = 0
@@ -54,7 +55,7 @@ export default function GameBoard() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({id:quoteDetails.id ,"solution": data.join("").toUpperCase(), "userInput": data.join("").toUpperCase()}),
+        body: JSON.stringify({id:quoteDetails.id ,"solution": data.join("").toUpperCase(), "userInput": data.join("").toUpperCase(), "hintAmount": hintAmount, "time": time.sec}),
         }).then((response)=>{
             return response.json()
         }).then((data)=>{
@@ -63,6 +64,7 @@ export default function GameBoard() {
               setTimerOn(false)
               toggleTimer(false)
               setFinish(true)
+              setFinishPageData({"score": data.score})
 
           }
         })
@@ -282,13 +284,14 @@ if (document.cookie) {
         <div className='finish-cover'>
            <div className='finish-title-wrapper'> 
             <h1 className='finish-title'> Correct! </h1>
+            <h6> Score: {finishPageData.score} </h6>
             <button className='finish-btn' onClick={handleRefresh}> New Game </button>
             </div> 
         </div> :
 
 
     <GameContext.Provider value={c}>
-    <h1> Welcome to Cryptogram </h1>
+    <h1> Cryptogram </h1>
      <div className='board'>
 
         {/*console.log("state", state)*/}
@@ -303,10 +306,10 @@ if (document.cookie) {
 
 
     <div>
-    <button onClick={getBoard} className="button">Submit</button>
+    <button onClick={getBoard} className="button submit-btn">Submit</button>
    {/* <button onClick={sendBoard}> Send </button>*/}
 
-    <button onClick={getHint} className="button">Hint</button>
+    <button onClick={getHint} className="button hint-btn">Hint</button>
 
     <Timer time={time} start={() => toggleTimer(true)} stop={() => toggleTimer(false)}/>
     </div>

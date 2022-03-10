@@ -94,7 +94,18 @@ app.get("/crypt", cors(), function (req, res){
 
 
 app.post("/auth", cors(), function(req, res){
-    
+    let totalScore = 0
+    let actualScore = 0
+
+    function computeScore() {
+        actualScore = totalScore - (hintUsed*500) - ((Math.floor(timeUsed/30))*100)
+        console.log(hintUsed, timeUsed)  // DEBUG
+        if (actualScore < 0) {
+            actualScore = 0
+        }
+    }
+
+
     function validate(string_1, string_2){
         new_str = string_2.replace(/\W/g, "").toUpperCase();
         console.log(new_str)
@@ -102,6 +113,8 @@ app.post("/auth", cors(), function(req, res){
         //console.log(string_2)
         
         if (string_1 === new_str){
+            totalScore = new_str.length * 500
+            computeScore()
             return true;
         }
     
@@ -117,6 +130,8 @@ app.post("/auth", cors(), function(req, res){
     let data = req.body;
     let usrSol = data.userInput;
     let id = data.id;
+    let hintUsed = data.hintAmount;
+    let timeUsed = data.time
 
     
     //let answer = quotes[id];
@@ -132,7 +147,7 @@ app.post("/auth", cors(), function(req, res){
     }
     
     if (validate(usrSol, answer)){
-        res.json({valid:true, score:100000});
+        res.json({valid:true, score:totalScore});
     } else {
         res.json({valid:false});
     }

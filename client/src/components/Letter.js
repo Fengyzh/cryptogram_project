@@ -189,7 +189,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       let stack = []
 
       if (!timer) {
-        //setTimer(true)
+        setTimer(true)
       }
 
       
