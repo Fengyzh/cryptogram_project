@@ -1,10 +1,24 @@
 const express = require('express')
 const axios = require('axios');
-const app = express()
-var cors = require('cors')
+const app = express();
+var cors = require('cors');
+const pg = require('pg');
 
-app.use(express.json())
-app.use(express.static("public"))
+const cookieParser = require('cookie-parser')
+
+app.use(express.json());
+app.use(express.static("public"));
+app.use(cookieParser())
+
+// imports database environment variables
+const connection = require("../env.json");
+
+const Pool = pg.Pool;
+const pool = new Pool(connection);
+
+pool.connect().then(function () {
+    console.log("Connected!");
+});
 
 app.use(cors({
     origin: '*'
@@ -94,18 +108,6 @@ app.get("/crypt", cors(), function (req, res){
 
 
 app.post("/auth", cors(), function(req, res){
-    let totalScore = 0
-    let actualScore = 0
-
-    function computeScore() {
-        actualScore = totalScore - (hintUsed*500) - ((Math.floor(timeUsed/30))*100)
-        console.log(hintUsed, timeUsed)  // DEBUG
-        if (actualScore < 0) {
-            actualScore = 0
-        }
-    }
-
-
     function validate(string_1, string_2){
         new_str = string_2.replace(/\W/g, "").toUpperCase();
         console.log(new_str)
@@ -113,13 +115,13 @@ app.post("/auth", cors(), function(req, res){
         //console.log(string_2)
         
         if (string_1 === new_str){
-            totalScore = new_str.length * 500
-            computeScore()
             return true;
         }
     
         return false;
     }
+
+    let cookieFlag = true;
 
     if (!req.body.hasOwnProperty("solution")){
         res.status(400);
@@ -127,34 +129,72 @@ app.post("/auth", cors(), function(req, res){
         return
     }
 
-    let data = req.body;
-    let usrSol = data.userInput;
-    let id = data.id;
-    let hintUsed = data.hintAmount;
-    let timeUsed = data.time
+    pool.query(
+        `SELECT DISTINCT userID FROM SCORE
+        WHERE userID = $1`,
+        [req.cookies.sessionID]
+    ).then(function (response) {
+        let sessionID = req.cookies.sessionID;
 
-    
-    //let answer = quotes[id];
-    let answer;
+        console.log("Result:");
+        console.log(response.rows);
 
-    //console.log(quotes)
-    
-    for (i of quotes) {
-        if (i.id === id) {
-            answer = i.text
-            console.log("yes")
+        if (response.rows.length === 0){
+            cookieFlag = false;
         }
-    }
-    
-    if (validate(usrSol, answer)){
-        res.json({valid:true, score:totalScore});
-    } else {
-        res.json({valid:false});
-    }
 
-    return;
+        let data = req.body;
+        let usrSol = data.userInput;
+        let id = data.id;
 
+        //let answer = quotes[id];
+        let answer;
+
+        for (i of quotes) {
+            if (i.id === id) {
+                answer = i.text;
+                console.log("yes");
+            }
+        }
+
+        let usrScore;
+        
+        if (validate(usrSol, answer)){
+            usrScore =  computeScore();
+            res.json({valid:true, score:100000});
+        } else {
+            res.json({valid:false});
+            return
+        }
+
+        if (!cookieFlag){
+            const life = 1000*60*60*24*20; //20 days
+            sessionID = Math.floor((1+Math.random()) * Date.now());
+            res.cookie('sessionID', sessionID, {expires: life + Date.now()});
+        }
+
+        pool.query(
+            `INSERT INTO SCORE(quoteID, userID, score)
+            VALUES ($1, $2, $3)
+            RETURNING *`,
+            [answer, sessionID, userScore]
+        ).then(function (response) {
+            console.log("Inserted:");
+            console.log(response.rows);
+        }).catch(function (error) {
+            console.log(error);
+        })
+    }).catch(function (error) {
+        console.log(error);
+    })
 })
+
+//Randomly generates a cookie based on timestamp of request
+//There will be sliver of a chance on collision, but
+//I've chose to forgo querying the database 
+function getCookie(req, res){
+    
+}
 
 //Handles selecting a letter for hint.
 //Expects the form {userInput: String, quoteID:int}
