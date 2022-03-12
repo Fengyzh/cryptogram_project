@@ -4,13 +4,14 @@ const app = express();
 var cors = require('cors');
 const pg = require('pg');
 
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser')
 
 app.use(express.json());
+app.use(express.static("public"));
 app.use(cookieParser())
 
 // imports database environment variables
-const connection = require("./env.json");
+const connection = require("../env.json");
 
 const Pool = pg.Pool;
 const pool = new Pool(connection);
@@ -20,8 +21,7 @@ pool.connect().then(function () {
 });
 
 app.use(cors({
-    credentials: true,
-    origin: true
+    origin: '*'
 }));
 
 app.get('/', function (req, res) {
@@ -108,44 +108,13 @@ app.get("/crypt", cors(), function (req, res){
 
 
 app.post("/auth", cors(), function(req, res){
-    console.log(req.cookies)
-    // Needed to avoid CORS issues
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-
-    
-    let data = req.body;
-    let usrSol = data.userInput;
-    let id = data.id;
-    let hintUsed = data.hintAmount;
-    let timeUsed = data.time
-
-    let totalScore = 0
-    let actualScore = 0
-
-    function computeScore() {
-        actualScore = totalScore - (hintUsed*500) - ((Math.floor(timeUsed/30))*100)
-        console.log(hintUsed, timeUsed)  // DEBUG
-        console.log("inside: ", actualScore)
-        if (actualScore < 0) {
-            actualScore = 0
-        }
-    }
-
-    function compressString(string) {
-        return string.replace(/\W/g, "").toUpperCase();
-    }
-
-
-
     function validate(string_1, string_2){
-        new_str = compressString(string_2)
+        new_str = string_2.replace(/\W/g, "").toUpperCase();
         console.log(new_str)
         console.log(string_1)
         //console.log(string_2)
         
         if (string_1 === new_str){
-            totalScore = new_str.length*500
             return true;
         }
     
@@ -160,77 +129,64 @@ app.post("/auth", cors(), function(req, res){
         return
     }
 
-    let answer;
-
-    for (i of quotes) {
-        if (i.id === id) {
-            answer = i.text;
-            console.log("yes");
-        }
-    }
-    totalScore = compressString(answer).length * 500;
-    computeScore();
-    console.log("sessionID Check: ", req.cookies.sessionID)
-
     pool.query(
-        `SELECT DISTINCT userID FROM SCORES
+        `SELECT DISTINCT userID FROM SCORE
         WHERE userID = $1`,
         [req.cookies.sessionID]
     ).then(function (response) {
-        
         let sessionID = req.cookies.sessionID;
 
+        console.log("Result:");
         console.log(response.rows);
 
         if (response.rows.length === 0){
             cookieFlag = false;
         }
 
+        let data = req.body;
+        let usrSol = data.userInput;
+        let id = data.id;
 
         //let answer = quotes[id];
+        let answer;
 
+        for (i of quotes) {
+            if (i.id === id) {
+                answer = i.text;
+                console.log("yes");
+            }
+        }
 
-
+        let usrScore;
         
+        if (validate(usrSol, answer)){
+            usrScore =  computeScore();
+            res.json({valid:true, score:100000});
+        } else {
+            res.json({valid:false});
+            return
+        }
+
         if (!cookieFlag){
             const life = 1000*60*60*24*20; //20 days
             sessionID = Math.floor((1+Math.random()) * Date.now());
-            res.cookie('sessionID', sessionID, {"expires": new Date(life + Date.now())});
-            console.log("cookie made")
+            res.cookie('sessionID', sessionID, {expires: life + Date.now()});
         }
 
-        
-
-        if (validate(usrSol, answer)){
-            pool.query(
-                `INSERT INTO SCORES(quoteID, userID, score)
-                VALUES ($1, $2, $3)
-                RETURNING *`,
-                [id, sessionID, actualScore]
-            ).then(function (response) {
-                console.log("Inserted:");
-                console.log(response.rows);
-            }).catch(function (error) {
-                console.log(error);
-            }).then(()=>{
-            res.json({valid:true, score:actualScore});
-            })
-        } else {
-            // res.cookie('sessionID', "hello"); DEBUG
-            res.json({valid:false});
-            //return
-        }
-    
-
+        pool.query(
+            `INSERT INTO SCORE(quoteID, userID, score)
+            VALUES ($1, $2, $3)
+            RETURNING *`,
+            [answer, sessionID, userScore]
+        ).then(function (response) {
+            console.log("Inserted:");
+            console.log(response.rows);
+        }).catch(function (error) {
+            console.log(error);
+        })
     }).catch(function (error) {
         console.log(error);
     })
-
-
-        //let usrScore;
-        
-       
-        
 })
 
 //Randomly generates a cookie based on timestamp of request
