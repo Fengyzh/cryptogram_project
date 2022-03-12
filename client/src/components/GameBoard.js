@@ -5,6 +5,7 @@ import { GameContext } from './GameContext';
 import Timer from './Timer';
 
 
+
 export default function GameBoard() {
 
 
@@ -49,12 +50,15 @@ export default function GameBoard() {
         // Do nothing when the response is not valid (user input not right)
 
         console.log(data.join(""))
+ 
 
         fetch('http://localhost:4000/auth', {
-        method: 'POST', 
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include',
+        withCredentials: true,
         body: JSON.stringify({id:quoteDetails.id ,"solution": data.join("").toUpperCase(), "userInput": data.join("").toUpperCase(), "hintAmount": hintAmount, "time": time.sec}),
         }).then((response)=>{
             return response.json()

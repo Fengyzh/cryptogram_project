@@ -126,10 +126,13 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         console.log(next)
         
       } else if (next.firstChild.value === undefined && next.parentElement.nextSibling != null) {
-        console.log(767)
-        console.log("next sis: ", next.parentElement.nextSibling)
-        test(next.parentElement.nextSibling.firstChild.firstChild)
-
+        console.log(767, next)
+        if (next.firstChild != null && next.nextSibling.firstChild != null) {
+          next = next.nextSibling.firstChild
+        } else {
+          console.log("next sis: ", next.parentElement.nextSibling)
+          test(next.parentElement.nextSibling.firstChild.firstChild)
+        }
       }
 
       
@@ -138,8 +141,6 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       } else if (next.tagName === "INPUT") {
         next.focus()
       }
-      console.log("focus")
-
 
       /*
       // If the first input of the next letter is not undefined and the length of that value is not 0 (already have an input)
