@@ -7,9 +7,15 @@ The project was to create a webapp that allow users to play cryptogram on their 
  
  ## Setup
  
-### Server setup
+### Server Setup
 ```
  node server.js
+```
+
+### Client Setup
+```
+ cd client
+ npm start
 ```
  
  
