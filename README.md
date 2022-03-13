@@ -7,6 +7,9 @@ The project was to create a webapp that allow users to play cryptogram on their 
  
  ## Setup
 
+- Prerequisite
+ - Postgres SQL installed on the machine
+
 ## Database Setup
 ```
  bash setupDB.bash
