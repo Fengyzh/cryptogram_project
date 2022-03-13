@@ -2,7 +2,7 @@
  --- 
  ## Description
  
-The project was to create a webapp that allow users to play cryptogram on their browser. The project is a full-stack application that uses a React front-end, Node.JS/ Express back-end along with a local Postgres SQL database for score tracking.
+The project was to create a webapp that allow users to play cryptogram on their browser. The project is a full-stack web application that uses a React front-end, Node.JS/ Express back-end along with a local Postgres SQL database for score tracking. Cookies are used for identification and score logging in the database.
 
  
  ## Setup
