@@ -6,6 +6,16 @@ The project was to create a webapp that allow users to play cryptogram on their 
 
  
  ## Setup
+
+## Database Setup
+```
+ bash setupDB.bash
+ 
+ // OR
+ 
+ ./setupDB.bash
+```
+ 
  
 ### Server Setup
 ```
