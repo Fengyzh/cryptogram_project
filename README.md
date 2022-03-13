@@ -10,7 +10,7 @@ The project was to create a webapp that allow users to play cryptogram on their 
 - Prerequisite
   - Postgres SQL installed on the machine
 - Note
-  - **Please do the setups in order**
+  - **!! Please do the setups in order !!**
 
 ## Database Setup
 ```
