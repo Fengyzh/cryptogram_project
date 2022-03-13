@@ -17,6 +17,7 @@ export default function GameBoard() {
     const [hintAmount, setHintAmount] = useState(0);
     const [finish, setFinish] = useState(false);
     const [finishPageData, setFinishPageData] = useState({})
+    const [message, setMessage] = useState(" ")
 
 
     let c = 0
@@ -69,7 +70,12 @@ export default function GameBoard() {
               toggleTimer(false)
               setFinish(true)
               setFinishPageData({"score": data.score})
+              setMessage("")
 
+          } else {
+              setMessage("Invalid answer, Please try again")
+              setTimeout(()=>{setMessage("")},2000)
+              
           }
         })
 
@@ -90,6 +96,16 @@ function getHint() {
     let inputs = document.getElementsByClassName("inputs");
 
     // Use to store letters that the user already entered, they will be unique
+    let letters = []
+
+    for (let i of inputs) {
+        if (!letters.includes(i.value) && i.value != "") {
+            letters.push(i.value)
+        }
+    }
+
+
+    // console.log('letters: ', letters) DEBUG
 
     // Pick a random number
     let rand = Math.floor(Math.random() * (inputs.length));
@@ -108,7 +124,7 @@ function getHint() {
 
 
     /* Fetch Request when hint amount is < 5 */ 
-    if (hintAmount < 5) {
+    if (hintAmount < 5 && letters.length < 5) {
     fetch('http://localhost:4000/hint', {
     method: 'POST', 
     headers: {
@@ -295,7 +311,16 @@ if (document.cookie) {
 
 
     <GameContext.Provider value={c}>
+    
+
     <h1> Cryptogram </h1>
+
+        <div className='time-container'>
+        <h1 className='time'> Time: {time.sec}</h1>
+        </div>    
+
+
+
      <div className='board'>
 
         {/*console.log("state", state)*/}
@@ -317,8 +342,8 @@ if (document.cookie) {
 
     <Timer time={time} start={() => toggleTimer(true)} stop={() => toggleTimer(false)}/>
     </div>
-    <h1>{time.sec}</h1>
-
+    <h2 className='message'>{message}</h2>
+ 
 
     </GameContext.Provider>
 }

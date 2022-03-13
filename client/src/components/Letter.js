@@ -30,7 +30,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
 
 
 
-    function test(e) {
+    function shift(e) {
       let next;
       // Handles going to the next input in the same word AND going to the first input of the next word (Doesn't skip letter)
       if (e.target !== undefined) {
@@ -76,7 +76,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
 
         if (next.firstChild.value !== undefined && next.firstChild.value != 0) {
           console.log("rec")
-          test(next.firstChild)
+          shift(next.firstChild)
           return
           
         }
@@ -127,11 +127,11 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         
       } else if (next.firstChild.value === undefined && next.parentElement.nextSibling != null) {
         console.log(767, next)
-        if (next.firstChild != null && next.nextSibling.firstChild != null) {
+        if (next.firstChild != null && next.nextSibling != null && next.nextSibling.firstChild != null) {
           next = next.nextSibling.firstChild
         } else {
           console.log("next sis: ", next.parentElement.nextSibling)
-          test(next.parentElement.nextSibling.firstChild.firstChild)
+          shift(next.parentElement.nextSibling.firstChild.firstChild)
         }
       }
 
@@ -281,7 +281,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       if (e.target.parentElement.nextSibling != null && e.target.value.length == 1 && e.target.value != "") {
         //e.target.parentElement.nextSibling.firstChild.focus()
         console.log(222)
-        test(e)
+        shift(e)
       } 
 
       // Move to the next input field in the next word
@@ -290,7 +290,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       if (e.target.parentElement.nextSibling == null && e.target.parentElement.parentElement.firstChild != null && e.target.value != "") {
         console.log(111)
         //e.target.parentElement.parentElement.nextSibling.firstChild.firstChild.focus()
-        test(e)
+        shift(e)
       }
 
       console.log(stack)

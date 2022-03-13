@@ -7,7 +7,7 @@ import { GameContext } from './GameContext'
 export default function Word({timer, setTimer, word, wordIndex, wIndex}) {
 
   let count = 0
-  const puncuation = [",", ".", ":", "\"", "\'", ";", "!", "?"]
+  const puncuation = [",", ".", ":", "\"", "\'", ";", "!", "?", "-"]
   let c  = useContext(GameContext);
 
   
