@@ -222,7 +222,7 @@ function getHint() {
         }).then((data)=>{
             console.log(data)
             if (data.rows.length == 0) {
-                setScores(["No Scores Available"])
+                setScores(["No score available for this puzzle"])
             } else {
                 setScores(data.rows)
             }
@@ -243,7 +243,7 @@ function getHint() {
             console.log(wordData)
             console.log(quoteID)
             setWords(wordData)
-            setQuoteDetails({id: quoteID})
+            setQuoteDetails({id: quoteID, author: data.author})
 
         }).then(()=>{
             let first = document.getElementsByClassName("inputs");
@@ -309,10 +309,13 @@ function getHint() {
         //console.log(wordss)
          return <Word timer={timerOn} setTimer = {() => toggleTimer(true)} wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
-
+    
 
     </div>
 
+    <div className='author-container'>
+    <h2 className='author'>By: {quoteDetails.author}</h2>
+    </div>
 
     <div>
     <button onClick={getBoard} className="button submit-btn">Submit</button>

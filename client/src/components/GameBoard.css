@@ -163,3 +163,16 @@ body {
     height:200px;
     overflow:scroll;
 }
+
+.author{
+    margin-bottom: 2rem;
+    margin-top: 0;
+    font-size: 2rem;
+}
+
+
+.author-container{
+    text-align: right;
+    width: 90%;
+    margin: 0 0;
+}
