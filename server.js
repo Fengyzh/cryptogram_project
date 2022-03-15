@@ -103,6 +103,8 @@ app.get("/crypt", cors(), function (req, res){
   key = randomizedKey();
   let quote = pickRandQuote();
   let newQuote = applyKey(quote.text, key)
+
+
   res.json({id:quote.id, quote:newQuote, author:quote.author})
 })
 
@@ -253,6 +255,30 @@ app.post("/hint", cors(), function(req, res){
     res.json({"letter": fmtQuote[pos], "pos": pos});
     return
 })
+
+
+app.post("/scores", cors(), (req,res)=>{
+
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+    let cookieID = req.cookies.sessionID
+    let quoteID = req.body.quoteID
+    let scores = []
+    pool.query(
+        `SELECT * FROM SCORES WHERE userid = $1 AND quoteid = $2`,
+        [cookieID, quoteID]
+    ).then((response)=>{
+        for (i of response.rows) {
+            scores.push(i.score)
+        }
+        res.json({"rows":scores})
+    })
+})
+
+
+
+
 
 app.listen(4000)
 console.log("Server started")

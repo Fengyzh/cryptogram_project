@@ -18,6 +18,7 @@ export default function GameBoard() {
     const [finish, setFinish] = useState(false);
     const [finishPageData, setFinishPageData] = useState({})
     const [message, setMessage] = useState(" ")
+    const [scores, setScores] = useState([])
 
 
     let c = 0
@@ -158,56 +159,13 @@ function getHint() {
     // Increment hint count
     setHintAmount(prevHintAmount => prevHintAmount + 1)
 }
-    
 
-// Cookie Test
-
-if (document.cookie) {
-    document.cookie = "id=101; expires=Thu, 18 Dec 2022 12:00:00 UTC;";
-} else {
-    document.cookie = "id=100; expires=Thu, 18 Dec 2022 12:00:00 UTC;";
-}
-    
 
 
     //console.log(hintInputField)  //DEBUG
     console.log("rand", rand)  //DEBUG
 
 
-
-
-    /*
-    // Loop through all the inputs
-    for (let i of inputs){
-
-        // If there is a key in the input that is not in the key array, append it
-        if (!keys.includes(i.value.toUpperCase())){
-            keys.push(i.value.toUpperCase())
-        }
-    }
-
-    // Should print out all the keys that the user entered
-    console.log("keys:", keys)
-
-    // Data send to server format
-    // {userInput:keys, quoteID:xxx}
-
-
-    // HARD CODE test purposes showing that the server should send back
-    // letter: The letter that server gives as a hint; index: the first occurence of that key in the quote array 
-    let temp = {"letter": "C", "index":7}
-
-        // Grab the input in the provided index and put "C" (the hint letter) in it
-    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-    nativeInputValueSetter.call(inputs[temp["index"]], 'C');
-
-
-    // Re-render OnChnage event so that it will fill in other input fields with the same key as the key provided by the hint
-    var inputEvent = new Event('input', { bubbles: true});
-    inputs[temp["index"]].dispatchEvent(inputEvent);
-    */
-    
-    
     //-----------DEBUG---------------//
     //inputs[temp["index"]].value = "C"
     //inputs[temp["index"]].dispatchEvent(new Event('change', { bubbles: true }))
@@ -249,9 +207,32 @@ if (document.cookie) {
         window.location.reload(false)
     }
 
-    useEffect(() => {
-        //setValue(words)
 
+    function getScores() {
+        fetch('http://localhost:4000/scores', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        withCredentials: true,
+        body: JSON.stringify({quoteID: quoteDetails.id})}
+        ).then((res)=>{
+           return res.json()
+        }).then((data)=>{
+            console.log(data)
+            if (data.rows.length == 0) {
+                setScores(["No Scores Available"])
+            } else {
+                setScores(data.rows)
+            }
+        })
+    }
+    
+
+
+
+    useEffect(() => {
 
         fetch('http://localhost:4000/crypt').then((response)=>{
             return response.json()
@@ -271,7 +252,7 @@ if (document.cookie) {
 
 
 
-        // Fetch here
+        
         let temp = {}
 
         for (let i = 0; i < words.keys.length; i++) {
@@ -288,7 +269,6 @@ if (document.cookie) {
         }
 
         console.log(temp)
-        //setState(temp)
 
 
         //Setting all same key field to have the same input
@@ -340,10 +320,18 @@ if (document.cookie) {
 
     <button onClick={getHint} className="button hint-btn">Hint</button>
 
+    <button onClick={getScores} className="button score-btn">Scores</button>
+
+
     <Timer time={time} start={() => toggleTimer(true)} stop={() => toggleTimer(false)}/>
     </div>
     <h2 className='message'>{message}</h2>
- 
+    <h2>Scores</h2>
+    <div className='scores-display'>
+        {scores.map((score)=>{
+            return <h3 className='scores'>{score}</h3>
+        })}
+    </div>
 
     </GameContext.Provider>
 }
