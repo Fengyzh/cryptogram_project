@@ -1,3 +1,12 @@
+<------ Please do the following in order ------>
+
+
+Database
+-------------------
+1. Open bash terminal
+2. run "bash setupDB.sh" or "./setupDB.sh"
+
+
 Server
 -------------------
 1. At root directory
