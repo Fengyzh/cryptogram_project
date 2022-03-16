@@ -263,14 +263,13 @@ app.post("/scores", cors(), (req,res)=>{
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
     let cookieID = req.cookies.sessionID
-    let quoteID = req.body.quoteID
     let scores = []
     pool.query(
-        `SELECT * FROM SCORES WHERE userid = $1 AND quoteid = $2`,
-        [cookieID, quoteID]
+        `SELECT * FROM SCORES WHERE userid = $1`,
+        [cookieID]
     ).then((response)=>{
         for (i of response.rows) {
-            scores.push(i.score)
+            scores.push({"score": i.score, "quoteID": i.quoteid})
         }
         res.json({"rows":scores})
     })

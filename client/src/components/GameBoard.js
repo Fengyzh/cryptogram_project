@@ -303,10 +303,7 @@ function getHint() {
 
      <div className='board'>
 
-        {/*console.log("state", state)*/}
-        {/*console.log("value", value)*/}
     {words.map((wordss, index)=>{
-        //console.log(wordss)
          return <Word timer={timerOn} setTimer = {() => toggleTimer(true)} wIndex={index} word={wordss} wordIndex= {words.values[index]}/>
     })}
     
@@ -319,7 +316,6 @@ function getHint() {
 
     <div>
     <button onClick={getBoard} className="button submit-btn">Submit</button>
-   {/* <button onClick={sendBoard}> Send </button>*/}
 
     <button onClick={getHint} className="button hint-btn">Hint</button>
 
@@ -332,7 +328,7 @@ function getHint() {
     <h2>Scores</h2>
     <div className='scores-display'>
         {scores.map((score)=>{
-            return <h3 className='scores'>{score}</h3>
+            return <h3 className='scores'>Quote #{score.quoteID}: {score.score}</h3>
         })}
     </div>
 

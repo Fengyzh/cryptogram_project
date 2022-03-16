@@ -27,9 +27,6 @@ export default function Word({timer, setTimer, word, wordIndex, wIndex}) {
              return <Letter timer = {timer} setTimer = {setTimer} lIndex={wIndex} fieldValue={" "} keyLetter={letter}/> 
            }
 
-/*
-            return puncuation.includes(letter)? (<div>{letter} </div>, count-=1): <Letter lIndex={count} fieldValue={" "} keyLetter={letter}/> 
-           */
         })
 
      }
@@ -40,7 +37,6 @@ export default function Word({timer, setTimer, word, wordIndex, wIndex}) {
 
 
 
-        {/*<Letter fieldValue={13} keyLetter={"X"}/>*/}
     </div>
   )
 }

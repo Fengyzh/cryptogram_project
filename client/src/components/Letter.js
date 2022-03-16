@@ -4,8 +4,6 @@ import { GameContext } from './GameContext';
 export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex}) {
 
   const { index, setIndex } = useContext(GameContext);
-  //const [stk, setStk] = useState([]);
-  //const [allInputs, setAllInputs] = useState();
 
 
     let letterList = []
@@ -35,9 +33,6 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       // Handles going to the next input in the same word AND going to the first input of the next word (Doesn't skip letter)
       if (e.target !== undefined) {
 
-        //if (e.target.parentElement.nextSibling == null && ) {
-
-        //}
 
 
         next  = e.target.parentElement.nextSibling // Next Letter div
@@ -47,22 +42,13 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         next = e.parentElement.nextSibling
       }
       
-      console.log("value:", e.value)
-      console.log("length", e.value? e.value.length : null)
       if (e.value !== undefined && e.value.length === 0 && e.tagName === "INPUT") {
-        console.log(989)
         e.focus()
         return
       }
       
-      
-      console.log(111,next)
-      console.log(111, next===null? null : (next.firstChild, console.log("first")))
-     
 
       if (next === null) { // If next letter is null that means this is the end of the word
-        console.log(333)
-        console.log("next:", next)
 
         if (e.target == undefined){
             next = e.parentElement.parentElement.nextSibling.firstChild
@@ -72,10 +58,9 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         next = e.target.parentElement.parentElement.nextSibling.firstChild // Correct next letter to -> The first div of the next word's first letter
         }
 
-        console.log("after:",next)
+
 
         if (next.firstChild.value !== undefined && next.firstChild.value != 0) {
-          console.log("rec")
           shift(next.firstChild)
           return
           
@@ -86,17 +71,11 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       // Skips letter
       // If the first input of the next letter is not undefined and the length of that value is not 0 (already have an input)
       else if (next.firstChild.value !== undefined && next.firstChild.value.length !== 0) {
-        console.log(777)
-        /*
-          Known: It can jump 1 letter within the same word with "next = next.nextSibling"
-          Next: Is currently at "the next input field of the current input"
-          TODO: Skip multiple letters in the same word (Finished)
-        */
-          console.log("next:", next)
+
           next = next.firstChild
 
          while (next !== null && (next.value !== undefined && next.value.length !== 0) || next.tagName !== "INPUT") {
-           console.log(666)
+
 
 
            //End of word
@@ -106,13 +85,13 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
               }
 
               next = next.parentElement.parentElement.nextSibling.firstChild.firstChild
-              console.log("next1:", next)
+
 
            } else {
 
             next = next.parentElement.nextSibling.firstChild
            }
-            console.log("next2:", next)
+
 
          } 
         
@@ -123,14 +102,13 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
 
        
           // Move the next pointer to the next Letter div
-        console.log(next)
+
         
       } else if (next.firstChild.value === undefined && next.parentElement.nextSibling != null) {
-        console.log(767, next)
         if (next.firstChild != null && next.nextSibling != null && next.nextSibling.firstChild != null) {
           next = next.nextSibling.firstChild
         } else {
-          console.log("next sis: ", next.parentElement.nextSibling)
+          
           shift(next.parentElement.nextSibling.firstChild.firstChild)
         }
       }
@@ -163,10 +141,10 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       //console.log("indexxxx: ", e.target.dataset.inputindex) // DEBUG
 
 
-      // BUG
+
       if (!(e.target.value.length === 1 && e.target.value.match(/[a-z]/i))) {
         e.target.value = ""
-        //return
+   
       }
 
       // Populate all the fields with the same key with the value the user inputted
@@ -188,11 +166,11 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         console.log(keys)
 
         for(var i = 0; i<keys.length; i++){ // Go through every key in the arry
-          //var dupe = false;
+     
           for(var j = i+1; j<keys.length; j++){ // j = i + 1 and not j = 0 because you don't want to check 2 keys' value bc they will always be the same. This still checks for dups because even if i is at the second to last digit, if there is a dup, it wouldve be added to the list already in one of the early iterations
             if(dict[keys[i]].toUpperCase() === dict[keys[j]].toUpperCase() && dict[keys[i]] != ""){
               stack.push(dict[keys[i]].toUpperCase())
-              //dupe = true;
+   
             }
            
         }
@@ -216,7 +194,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       }
 
      
-      //console.log("dupe: " , dupe)
+    
  
 
         
@@ -226,22 +204,21 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         // Move to the next input field in this word
         
       if (e.target.parentElement.nextSibling != null && e.target.value.length == 1 && e.target.value != "") {
-        //e.target.parentElement.nextSibling.firstChild.focus()
-        console.log(222)
+    
+       
         shift(e)
       } 
 
       // Move to the next input field in the next word
-      //console.log(e.target.parentElement.parentElement.nextSibling.firstChild)
+   
 
       if (e.target.parentElement.nextSibling == null && e.target.parentElement.parentElement.firstChild != null && e.target.value != "") {
-        console.log(111)
-        //e.target.parentElement.parentElement.nextSibling.firstChild.firstChild.focus()
+        
+        
         shift(e)
       }
 
-      console.log(stack)
-      console.log(dict)
+
       
      
   }
