@@ -142,41 +142,7 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
         next.focus()
       }
 
-      /*
-      // If the first input of the next letter is not undefined and the length of that value is not 0 (already have an input)
-      else if (next.firstChild.value != undefined && next.firstChild.value.length != 0) {
-        console.log(11)
-        next = next.nextSibling  // Move the next pointer to the next Letter div
-        if (next == null) {   // If next letter is null that means this is the end of the word
-          console.log(22)
-          next = e.target.parentElement.parentElement.nextSibling   //Move the pointer to the next
-          //temp = e.target.parentElement.parentElement.nextSibling.firstChild.firstChild.value.length
-          console.log("target:", e.target.parentElement.parentElement.nextSibling.firstChild)
-          console.log(99)
-          console.log("while: ", next.firstChild.firstChild)
 
-          let temp = next.firstChild
-          while (temp.firstChild.value.length != 0) {
-            
-            next = next.firstChild.firstChild.nextSibling
-            temp = temp.firstChild.parentElement.nextSibling
-            console.log("temp: ", temp)
-          }
-
-          //next = e.target.parentElement.parentElement.nextSibling.firstChild
-         console.log("temmm: ", next)
-            next = temp
-          
-
-        }
-      } 
-      //console.log("next: ", next.firstChild)
-
-      if (next.firstChild != null && next.firstChild.tagName == "INPUT") {
-        next.firstChild.focus()
-      }
-
-      */
     }
 
 
@@ -243,29 +209,10 @@ export default function Letter({timer, setTimer, keyLetter, fieldValue, lIndex})
       for (let k of allInputs) {
         k.style.color = "black"
 
-
-      //if (stack.includes(e.target.value.toUpperCase())) {
-
-        //console.log("in:")
-        /*
-          if (k.value === e.target.value.toUpperCase()) {
-            k.style.color = "red"
-          } */
           if (stack.includes(k.value)) {
             k.style.color = "red"
           }
 
-        //}
-
-        /*
-        for (let k of list ) {
-          k.style.color = "red"
-        }
-      } else {
-        for (let k of list ) {
-          k.style.color = "black"
-        }
-        */
       }
 
      
