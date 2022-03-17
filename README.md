@@ -20,6 +20,8 @@ The project was to create a webapp that allow users to play cryptogram on their 
  
  ./setupDB.bash
 ```
+ 2. Go to "env.json" and change the password to the password of your Postgres Database
+ 
  
  
 ### Server Setup
